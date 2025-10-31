@@ -1,0 +1,47 @@
+/* Loader.css */
+.loader-container {
+    display: flex
+    ;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        position: fixed;
+        height: 100vh;
+        z-index: 9999;
+        left: 0;
+        right: 0;
+        top: 0;
+        background: #fffffff2;
+    
+  }
+  .loader {
+    position: relative;
+    width:  48px;
+    height: 48px;
+    background: #0a5b80;
+    transform: rotateX(65deg) rotate(45deg);
+    /* // remove bellows command for perspective change */
+    transform: perspective(200px) rotateX(65deg) rotate(45deg); 
+    color: #1d87b8bf;
+    animation: layers1 1s linear infinite alternate;
+  }
+  .loader:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #1d87b8bf;
+    animation: layerTr 1s linear infinite alternate;
+  }
+
+  @keyframes layers1 {
+    0% { box-shadow: 0px 0px 0 0px  }
+   90% , 100% { box-shadow: 20px 20px 0 -4px  }
+  }
+  @keyframes layerTr {
+    0% { transform:  translate(0, 0) scale(1) }
+    100% {  transform: translate(-25px, -25px) scale(1) }
+  }
+      
+
+  /* old */
+  
