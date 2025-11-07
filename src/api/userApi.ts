@@ -134,6 +134,25 @@ let data ={
           throw error;
         }
       };
+  export const masterDropdown = async (URL: string) => {
+        const token = Cookies.get("token");
+        
+        try {
+          // Use axios directly for logout to include Bearer token
+          const response = await axios.post(BASE_URL+URL, {}, {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            }
+          });
+          // Cookies.remove("token");   
+          return response.data;
+        } catch (error) {
+          // Cookies.remove("token");
+          // sessionStorage.clear();
+          throw error;
+        }
+      };
   export const addProduct = async (URL: string, productData: any) => {
         const token = Cookies.get("token");
         let data = {
@@ -189,6 +208,15 @@ let data ={
             if (error) throw new Error("Invalid id");
             return response;
       };
+  export const toggleSupplierStatus = async ( URL: string,id: string) => {
+        let data ={
+          id:id,    
+          // recaptchaToken
+        }
+            const { response, error } = await Service("POST", URL, JSON.stringify(data));
+            if (error) throw new Error("Invalid id");
+            return response;
+          };
   export const editSupplier = async (URL: string, id: string, editData: any) => {
             const data = {
               OrganisationID: editData.OrganisationID,
@@ -406,6 +434,15 @@ let data ={
           throw error;
         }
       };
+      export const toggleCustomerStatus = async ( URL: string,id: string) => {
+        let data ={
+          id:id,    
+          // recaptchaToken
+        }
+            const { response, error } = await Service("POST", URL, JSON.stringify(data));
+            if (error) throw new Error("Invalid id");
+            return response;
+          };
 
 
   export const register = async ( URL: string,registerData:any) => {

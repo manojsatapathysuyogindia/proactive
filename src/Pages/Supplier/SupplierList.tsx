@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 // import Sidebar from '../../Components/Sidebar';
-import { useDeleteSupplier, useSupplierList} from "../../apihooks/useUsers";
+import { useDeleteSupplier, useSupplierList, useToggleSupplierStatus} from "../../apihooks/useUsers";
 import { useApiRoutes } from "../../constants/apiRoutes";
 // import { useNavigate } from "react-router-dom";
 import { formatDate, formatTime } from '../../utils/Dateformat';
 import ConfirmationModal from '../../Components/ConfirmationModal';
 import Loader from '../../Components/Loader';
+import { errorToast } from '../../Components/ToastMessege';
+import CommonTable from '../../Components/CommonTable';
 
 
 
@@ -17,15 +19,17 @@ const SupplierList: React.FC = () => {
   const [allSupplierData, setAllSupplierData] = useState([]);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isRefresh, setIsRefresh] = useState(false);
   const [selectedSupplierId, setSelectedSupplierId] = useState<number | null>(null); // Track selected supplier
   // const navigate = useNavigate();
-  const { SUPPLIERLIST, DELETESUPPLIER } = useApiRoutes();
+  const { SUPPLIERLIST, DELETESUPPLIER,TOGGLESUPPLIERSTATUS } = useApiRoutes();
   const { mutateAsync: supplierlist} = useSupplierList();
   const { mutateAsync: deletesupplier} = useDeleteSupplier();
+  const { mutateAsync: togglesupplierstatus} = useToggleSupplierStatus();
 
   useEffect(() => {
     handleGetAllSupplier()
-  }, []);
+  }, [isRefresh]);
 
   const handleGetAllSupplier = async () => {
     setIsLoading(true);
@@ -80,7 +84,49 @@ const SupplierList: React.FC = () => {
     setIsLogoutModalOpen(false);
     setSelectedSupplierId(null);
   }
+const handleStatusChange=(id:any)=>{
+  statusChangeApi(id)
+}
+const statusChangeApi = async (id:any) => {
+  setIsLoading(true);
+  try {
+    const response = await togglesupplierstatus({
+      URL: TOGGLESUPPLIERSTATUS,
+      id: id
+    });
 
+    if (response?.status === 1) {
+      setIsLoading(false);
+      setIsRefresh(!isRefresh)
+      // setUserDetails(response.data);
+    } else {
+      setIsLoading(false);
+      errorToast(response?.message || "Failed to fetch user details");
+    }
+  } catch (error: any) {
+    setIsLoading(false);
+    errorToast(
+      error?.response?.data?.message ||
+      error?.message ||
+      "Something went wrong. Please try again."
+    );
+  }
+};
+const headers = [
+  'Id',
+  'Organisation Name', 
+  'Contact Name',
+  'Email',
+  'Phone',
+  'Organisation Address',
+  'Registered Office Address',
+  'Company Registered Number',
+  'VAT',
+  'Status',
+  'Created At',
+  'Updated At',
+  'Action'
+];
   return (
     <div className="container-fluid">
       <div className="row">
@@ -96,7 +142,7 @@ const SupplierList: React.FC = () => {
                 </form>
               </div>
 
-              <div className="table-responsive table-product">
+              {/* <div className="table-responsive table-product">
                 <table className="table all-package theme-table" id="table_id">
                   <thead>
                     <tr>
@@ -146,7 +192,14 @@ const SupplierList: React.FC = () => {
                         </td>
                         <td>{user.CompanyRegisteredNumber}</td>
                         <td>{user.VATNumber}</td>
-                        <td>{user.status}</td>
+                        <td> <label className="switch">
+    <input 
+      type="checkbox" 
+      checked={user.status === 1} 
+      onChange={() => handleStatusChange(user.id)}
+    />
+    <span className="switch-state"></span>
+  </label></td>
                         <td>{formatDate(user.created_at)} {formatTime(user.created_at)}</td>
                         <td>{formatDate(user.updated_at)} {formatTime(user.updated_at)}</td>
                         <td>
@@ -167,7 +220,64 @@ const SupplierList: React.FC = () => {
                     ))}
                   </tbody>
                 </table>
-              </div>
+              </div> */}
+              <CommonTable headers={headers}>
+              {allSupplierData?.map((user: any) => (
+                      <tr key={user.id}>
+                        <td>
+                          <div className="user-name">
+                            <span>{user.OrganisationID}</span>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="user-name">
+                            <span>{user.OrganisationName}</span>
+                          </div>
+                        </td>
+                        <td>
+                        {user.ContactFirstName} {' '} {user.ContactLastName}
+                        </td>
+                        <td>
+                          {user.ContactEmail}
+                        </td>
+                        <td>{user.ContactPhone}</td>
+                        <td>
+                          {user.OrganisationStreetAddress},{user.OrganisationAddressLine2},{user.OrganisationCity},
+                          {user.OrganisationState},{user.OrganisationPostalCode},{user.OrganisationCountry}
+                        </td>
+                        <td>
+                          {user.RegisteredOfficeStreetAddress},{user.RegisteredOfficeAddressLine2},{user.RegisteredOfficeCity},
+                          {user.RegisteredOfficeState},{user.RegisteredOfficePostalCode},{user.RegisteredOfficeCountry}
+                        </td>
+                        <td>{user.CompanyRegisteredNumber}</td>
+                        <td>{user.VATNumber}</td>
+                        <td> <label className="switch">
+    <input 
+      type="checkbox" 
+      checked={user.status === 1} // Assuming 1 = active, 0 = inactive
+      onChange={() => handleStatusChange(user.id)}
+    />
+    <span className="switch-state"></span>
+  </label></td>
+                        <td>{formatDate(user.created_at)} {formatTime(user.created_at)}</td>
+                        <td>{formatDate(user.updated_at)} {formatTime(user.updated_at)}</td>
+                        <td>
+                          <ul>
+                            <li>
+                              <Link to={`/edit-supplier/${user.id}`}>
+                                <i className="ri-pencil-line"></i>
+                              </Link>
+                            </li>
+                            <li>
+                              <a href="javascript:void(0)" onClick={() => openDeleteModal(user.id)}>
+                                <i className="ri-delete-bin-line"></i>
+                              </a>
+                            </li>
+                          </ul>
+                        </td>
+                      </tr>
+                    ))}
+              </CommonTable>
             </div>
           </div>
         </div>

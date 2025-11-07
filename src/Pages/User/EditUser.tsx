@@ -61,14 +61,16 @@ const EditUser: React.FC = () => {
       { name: 'applyCategoryDiscount', allow: true },
     ]
   });
-  setActiveTab('account')
+
   const navigate = useNavigate();
   const { USERDETAILS } = useApiRoutes();
   const { mutateAsync: userdetails } = useUserDetails();
   const { id } = useParams<{ id: string }>();
 
   console.log(id, 'id from link');
-
+  useEffect(() => {
+  setActiveTab('account')
+  })
   // ✅ Update formData when userDetails is loaded
   useEffect(() => {
     if (userDetails) {
@@ -194,6 +196,7 @@ const EditUser: React.FC = () => {
                                   value={formData.employeeId}
                                   onChange={handleInputChange}
                                   required
+                                  disabled
                                 />
                               </div>
                             </div>
@@ -210,6 +213,7 @@ const EditUser: React.FC = () => {
                                   value={formData.firstName}
                                   onChange={handleInputChange}
                                   required
+                                  disabled
                                 />
                               </div>
                             </div>
@@ -226,6 +230,7 @@ const EditUser: React.FC = () => {
                                   value={formData.middleName}
                                   onChange={handleInputChange}
                                   required
+                                  disabled
                                 />
                               </div>
                             </div>
@@ -242,6 +247,7 @@ const EditUser: React.FC = () => {
                                   value={formData.lastName}
                                   onChange={handleInputChange}
                                   required
+                                  disabled
                                 />
                               </div>
                             </div>
@@ -256,6 +262,7 @@ const EditUser: React.FC = () => {
                                   name="userType"
                                   value={formData.userType}
                                   onChange={handleInputChange}
+                                  disabled
                                 >
                                   <option value="">Select User Type</option>
                                   <option value="Admin">Admin</option>
@@ -277,6 +284,7 @@ const EditUser: React.FC = () => {
                                   value={formData.email}
                                   onChange={handleInputChange}
                                   required
+                                  disabled
                                 />
                               </div>
                             </div>
@@ -319,6 +327,7 @@ const EditUser: React.FC = () => {
                                   value={formData.phone}
                                   onChange={handleInputChange}
                                   required
+                                  disabled
                                 />
                                 {/* </div>
                                 

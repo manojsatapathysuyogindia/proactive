@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAddUser } from "../../apihooks/useUsers";
 import { errorToast, successToast } from "../../Components/ToastMessege";
 import { useApiRoutes } from "../../constants/apiRoutes";
@@ -41,7 +41,7 @@ const AddNewUser: React.FC = () => {
   const [activeTab, setActiveTab] = useState('account');
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  setActiveTab('account')
+
   const [formData, setFormData] = useState<UserFormData>({
     employeeId: '',
     firstName: '',
@@ -62,7 +62,9 @@ const AddNewUser: React.FC = () => {
       { name: 'applyCategoryDiscount', allow: true },
     ]
   });
-
+  useEffect(() => {
+    setActiveTab('account')
+  }, []);
   const { ADDUSER } = useApiRoutes();
   const { mutateAsync: adduser } = useAddUser();
 
@@ -166,7 +168,7 @@ const AddNewUser: React.FC = () => {
           ]
         });
         setErrors({});
-        navigate("alluser");
+        navigate("/alluser");
       } else {
         errorToast(response?.message || "Failed to add user");
       }

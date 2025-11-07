@@ -6,6 +6,7 @@ import { useAllUser} from "../../apihooks/useUsers";
 import { useApiRoutes } from "../../constants/apiRoutes";
 // import { useNavigate } from "react-router-dom";
 import Loader from '../../Components/Loader';
+import CommonTable from '../../Components/CommonTable';
 // Define TypeScript interfaces
 
 
@@ -52,7 +53,7 @@ const Alluser: React.FC = () => {
 
 
   const handleDelete = () => {}
-
+  const headers = ['Name', 'Department Name', 'Employee Id', 'Email', 'Option'];
   return (
    
           <div className="container-fluid">
@@ -68,8 +69,39 @@ const Alluser: React.FC = () => {
                         </Link>
                       </form>
                     </div>
-
-                    <div className="table-responsive table-product">
+                    <CommonTable headers={headers}>
+                {allUserData.map((user: any) => (
+                  <tr key={user.id}>
+                    <td>
+                      <div className="user-name">
+                        <span>{user.employee_first_name} {' '} {user.employee_middle_name} {' '} {user.employee_last_name}</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="user-name">
+                        <span>{user.department_name}</span>
+                      </div>
+                    </td>
+                    <td>{user.employee_id}</td>
+                    <td>{user.email ? user.email : '-'}</td>
+                    <td>
+                      <ul>
+                        <li>
+                          <Link to={`/edit-user/${user.id}`}>
+                            <i className="ri-pencil-line"></i>
+                          </Link>
+                        </li>
+                        <li>
+                          <a href="javascript:void(0)" onClick={() => handleDelete()}>
+                            <i className="ri-delete-bin-line"></i>
+                          </a>
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                ))}
+              </CommonTable>
+                    {/* <div className="table-responsive table-product">
                       <table className="table all-package theme-table" id="table_id">
                         <thead>
                           <tr>
@@ -85,22 +117,18 @@ const Alluser: React.FC = () => {
                         <tbody>
                           {allUserData?.map((user:any) => (
                             <tr key={user.id}>
-                              {/* <td>
-                                <div className="table-image">
-                                  <img src={user.avatar} className="img-fluid" alt={user.name} />
-                                </div>
-                              </td> */}
+                         
                               <td>
                                 <div className="user-name">
                                   <span>{user.employee_first_name} {' '} {user.employee_middle_name} {' '} {user.employee_last_name}</span>
-                                  {/* <span>{user.address}</span> */}
+                                 
                                 </div>
                               </td>
 
                               <td>
                                 <div className="user-name">
                                   <span>{user.department_name}</span>
-                                  {/* <span>{user.address}</span> */}
+                              
                                 </div>
                               </td>
 
@@ -110,11 +138,7 @@ const Alluser: React.FC = () => {
 
                               <td>
                                 <ul>
-                                  {/* <li>
-                                    <a href="order-detail.html">
-                                      <i className="ri-eye-line"></i>
-                                    </a>
-                                  </li> */}
+                        
 
                                   <li>
                                     <Link to={`/edit-user/${user.id}`}>
@@ -133,7 +157,46 @@ const Alluser: React.FC = () => {
                           ))}
                         </tbody>
                       </table>
-                    </div>
+                    </div> */}
+                    {/* <CommonTable
+            headers={headers}
+            title="All Users"
+            addButton={{
+              label: "Add New",
+              to: "/add-new-user"
+            }}
+          >
+            {allUserData.map((user: any) => (
+              <tr key={user.id}>
+                <td>
+                  <div className="user-name">
+                    <span>{user.employee_first_name} {' '} {user.employee_middle_name} {' '} {user.employee_last_name}</span>
+                  </div>
+                </td>
+                <td>
+                  <div className="user-name">
+                    <span>{user.department_name}</span>
+                  </div>
+                </td>
+                <td>{user.employee_id}</td>
+                <td>{user.email ? user.email : '-'}</td>
+                <td>
+                  <ul>
+                    <li>
+                      <Link to={`/edit-user/${user.id}`}>
+                        <i className="ri-pencil-line"></i>
+                      </Link>
+                    </li>
+                    <li>
+                      <a href="javascript:void(0)" onClick={() => handleDelete()}>
+                        <i className="ri-delete-bin-line"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            ))}
+          </CommonTable> */}
                   </div>
                 </div>
               </div>

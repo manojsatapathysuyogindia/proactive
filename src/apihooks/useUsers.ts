@@ -1,7 +1,7 @@
 import { useQuery ,useMutation} from "@tanstack/react-query";
 
 
-import { loginUser,logOutUser, fetchUserById,register,testApi, getCountriesService, getClassesService, addSubjectService, getAllSubjectService, deleteSubjectService, editSubjectService, getSubjectService, getQuestionTypeService, addQuestionService, getquestionlistService, deleteQuestionService, createExamService, getExamListService,getThemeOptionService, deleteExamService, getExamByIdService, updateExamService, getQuestionbyIdService,getStateService, getCityService, updateQuestionService, uploadImageService ,deleteImageService,getOTPService,getResendOTPService, deleteColumnoptionService, getExamScheduleService, addExamScheduleService, deleteExamScheduleService, getStudentdataService, fetchExamById, examAssign, setAssignExamScheduleService, finalSubmitService, setSaveNextExamService, getStartExamService, setbulkUploadStudentsService, saveNextService,updateStudentProfileService, getStudentProfileService, getgetcalculatemarkService, activateService, cmsEmailConfigService, studentedit, allUser, userDetails, addUser, changeUserPassword, addProduct, supplierList, editSupplier, supplierDetails, addSupplier, customerList, editCustomer, customerDetails, addCustomer, deletCustomer, deleteSupplier} from "../api/userApi";
+import { loginUser,logOutUser, fetchUserById,register,testApi, getCountriesService, getClassesService, addSubjectService, getAllSubjectService, deleteSubjectService, editSubjectService, getSubjectService, getQuestionTypeService, addQuestionService, getquestionlistService, deleteQuestionService, createExamService, getExamListService,getThemeOptionService, deleteExamService, getExamByIdService, updateExamService, getQuestionbyIdService,getStateService, getCityService, updateQuestionService, uploadImageService ,deleteImageService,getOTPService,getResendOTPService, deleteColumnoptionService, getExamScheduleService, addExamScheduleService, deleteExamScheduleService, getStudentdataService, fetchExamById, examAssign, setAssignExamScheduleService, finalSubmitService, setSaveNextExamService, getStartExamService, setbulkUploadStudentsService, saveNextService,updateStudentProfileService, getStudentProfileService, getgetcalculatemarkService, activateService, cmsEmailConfigService, studentedit, allUser, userDetails, addUser, changeUserPassword, addProduct, supplierList, editSupplier, supplierDetails, addSupplier, customerList, editCustomer, customerDetails, addCustomer, deletCustomer, deleteSupplier, masterDropdown, toggleSupplierStatus, toggleCustomerStatus} from "../api/userApi";
 
 export const useLogin = () => {
     return useMutation({
@@ -42,6 +42,11 @@ export const useLogin = () => {
       mutationFn: ({ URL }: { URL: string }) => allUser(URL),
     });
   };
+  export const useMasterDropdown = () => {
+    return useMutation({
+      mutationFn: ({ URL }: { URL: string }) => masterDropdown(URL),
+    });
+  };
   export const useAddProduct = () => {
     return useMutation({
       mutationFn: ({ URL,productData }: {URL:string, productData:any }) =>
@@ -57,6 +62,12 @@ export const useLogin = () => {
     return useMutation({
       mutationFn: ({ URL,id }: {URL:string, id: any; }) =>
         deleteSupplier(URL,id,),
+    });
+  };
+  export const useToggleSupplierStatus = () => {
+    return useMutation({
+      mutationFn: ({ URL,id }: {URL:string, id: any; }) =>
+        toggleSupplierStatus(URL,id,),
     });
   };
   export const useEditSupplier = () => {
@@ -104,6 +115,12 @@ export const useLogin = () => {
     return useMutation({
       mutationFn: ({ URL,customerData }: {URL:string, customerData:any }) =>
         addCustomer(URL,customerData),
+    });
+  };
+  export const useToggleCustomerStatus = () => {
+    return useMutation({
+      mutationFn: ({ URL,id }: {URL:string, id: any; }) =>
+        toggleCustomerStatus(URL,id,),
     });
   };
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAllProduct} from "../../apihooks/useUsers";
 import { useApiRoutes } from "../../constants/apiRoutes";
 import Loader from '../../Components/Loader';
+import CommonTable from '../../Components/CommonTable';
 
 
 const Allproduct: React.FC = () => {
@@ -41,7 +42,18 @@ const Allproduct: React.FC = () => {
   }
 
   
-
+  const headers = [
+    'Product',
+    'Category',
+    'Description', 
+    'Mfr Part No.',
+    'Our Part NO.',
+    'Manufacturer',
+    'Condition',
+    'Warrenty',
+    'Option'
+  ];
+  
   return (
 
         // <div className="page-body">
@@ -70,11 +82,11 @@ const Allproduct: React.FC = () => {
                       </div>
                     </div>
 
-                    <div className="table-responsive">
+                    {/* <div className="table-responsive">
                       <table className="table all-package theme-table table-product" id="table_id">
                         <thead>
                           <tr>
-                            {/* <th>Product Image</th> */}
+                            
                             <th>Product</th>
                             <th>Category</th>
                             <th>Description</th>
@@ -89,6 +101,44 @@ const Allproduct: React.FC = () => {
 
                         <tbody>
                           {allProductData?.map((product:any) => (
+                            <tr key={product.id}>
+                          
+
+                              <td>{product.ShortDescription}</td>
+
+                              <td>{product.Category}</td>
+
+                              <td>{product.LongDescription}</td>
+
+                              <td>{product.MfrPartNumber}</td>
+                              <td>{product.OurPartNumber}</td>
+                              <td>{product.Manufacturer}</td>
+                              <td>{product.Condition}</td>
+                              <td>{product.Warranty}</td>
+                              <td>
+                                <ul>
+                             
+
+                                  <li>
+                                    <Link to={`/edit-product/${product.id}`}>
+                                      <i className="ri-pencil-line"></i>
+                                    </Link>
+                                  </li>
+
+                                  <li>
+                                    <a href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+                                      <i className="ri-delete-bin-line"></i>
+                                    </a>
+                                  </li>
+                                </ul>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div> */}
+                    <CommonTable headers={headers}>
+                    {allProductData?.map((product:any) => (
                             <tr key={product.id}>
                               {/* <td>
                                 <div className="table-image">
@@ -135,9 +185,7 @@ const Allproduct: React.FC = () => {
                               </td>
                             </tr>
                           ))}
-                        </tbody>
-                      </table>
-                    </div>
+              </CommonTable>
                   </div>
                 </div>
               </div>

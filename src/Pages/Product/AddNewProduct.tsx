@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {  useNavigate } from 'react-router-dom';
 // import Sidebar from '../../Components/Sidebar';
-import { useAddProduct} from "../../apihooks/useUsers";
+import { useAddProduct,useMasterDropdown} from "../../apihooks/useUsers";
 import { useApiRoutes } from "../../constants/apiRoutes";
 import { errorToast, successToast } from '../../Components/ToastMessege';
 
@@ -51,6 +51,32 @@ interface Variant {
   sku: string;
   quantity: string;
 }
+export interface Category {
+  id: number;
+  name: string;
+}
+
+export interface Condition {
+  id: number;
+  name: string;
+}
+
+export interface Manufacturer {
+  id: number;
+  name: string;
+}
+
+export interface Warranty {
+  id: number;
+  name: string;
+}
+
+export interface MasterDropdownData {
+  categories: Category[];
+  conditions: Condition[];
+  manufacturers: Manufacturer[];
+  warranties: Warranty[];
+}
 
 // interface Notification {
 //   type: string;
@@ -81,6 +107,7 @@ const AddNewProduct: React.FC = () => {
   // const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const [isSearchOpen, setIsSearchOpen] = useState(false);
   // const [isDarkMode, setIsDarkMode] = useState(false);
+  const [masterDropdownData, setMasterDropdownData] = useState<MasterDropdownData | null>(null);;
   const [showVariantModal, setShowVariantModal] = useState(false);
   const [variantModalData, setVariantModalData] = useState<VariantModalData>({
     type: 'Color',
@@ -135,9 +162,12 @@ console.log(showVariantModal)
   const sanitizeInput = (input: string): string => {
     return input.replace(/<[^>]*>/g, '');
   };
-
-  const { ADDPRODUCT } = useApiRoutes();
+  useEffect(() => {
+    handleMasterDropdown()
+  }, []);
+  const { ADDPRODUCT,MASTERDROPDOWN } = useApiRoutes();
   const { mutateAsync: addproduct } = useAddProduct();
+  const { mutateAsync: masterdropdown } = useMasterDropdown();
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -198,7 +228,7 @@ console.log(showVariantModal)
 
       if (response?.status === 1) {
         successToast(response.message || "Product added successfully");
-        navigate("products");
+        navigate("/products");
       } else {
         errorToast(response?.message || "Failed to add product");
       }
@@ -275,7 +305,31 @@ console.log(showVariantModal)
     });
     setShowVariantModal(true);
   };
-
+  const handleMasterDropdown=async()=>{
+    // setIsLoading(true);
+    try {
+       const masterDropdown=await masterdropdown({
+        URL: MASTERDROPDOWN,
+      });
+      if(masterDropdown.status==1){
+        // setIsLogoutModalOpen(false)
+        // navigate("/");
+        setMasterDropdownData(masterDropdown?.data)
+        // setIsLoading(false);
+      }
+    } catch (error) {
+      // setIsLoading(false);
+      console.error("Logout failed:", error);
+      // Still redirect even if API fails
+      // navigate("/login");
+    }
+    //  const logoutUser=logout({
+    //   URL: LOGOUT,
+    // });
+    // if(logoutUser.status){}
+  
+    
+  }
   // const handleVariantModalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
   //   const { name, value } = e.target;
   //   setVariantModalData(prev => ({
@@ -384,11 +438,17 @@ console.log(showVariantModal)
                            
                           >
                             <option value="">Select Category</option>
+                            {masterDropdownData?.categories.map((category:any) => (
+                              <option key={category.id} value={category.id}>
+                                {category.name}
+                              </option>
+                            ))}
+                            {/* <option value="">Select Category</option>
                             <option value="1">Electronics</option>
                             <option value="2">TV & Appliances</option>
                             <option value="3">Home & Furniture</option>
                             <option value="4">Baby & Kids</option>
-                            <option value="5">Health, Beauty & Perfumes</option>
+                            <option value="5">Health, Beauty & Perfumes</option> */}
                           </select>
                           {errors.category && (
                             <div className="invalid-feedback d-block">
@@ -411,11 +471,16 @@ console.log(showVariantModal)
                           
                           >
                             <option value="">Select warranty</option>
-                            <option value="1">1 yr</option>
+                            {masterDropdownData?.warranties.map((warranties:any) => (
+                              <option key={warranties.id} value={warranties.id}>
+                                {warranties.name}
+                              </option>
+                            ))}
+                            {/* <option value="1">1 yr</option>
                             <option value="2">2 yr</option>
                             <option value="3">3 yr</option>
                             <option value="4">4 yr</option>
-                            <option value="5">5 yr</option>
+                            <option value="5">5 yr</option> */}
                           </select>
                           {errors.Warrenty && (
                             <div className="invalid-feedback d-block">
@@ -438,10 +503,15 @@ console.log(showVariantModal)
                            
                           >
                             <option value="">Select Brand</option>
-                            <option value="1">Puma</option>
+                            {masterDropdownData?.manufacturers.map((manufacturers:any) => (
+                              <option key={manufacturers.id} value={manufacturers.id}>
+                                {manufacturers.name}
+                              </option>
+                            ))}
+                            {/* <option value="1">Puma</option>
                             <option value="2">HRX</option>
                             <option value="3">Roadster</option>
-                            <option value="4">Zara</option>
+                            <option value="4">Zara</option> */}
                           </select>
                           {errors.Manufacturer && (
                             <div className="invalid-feedback d-block">
@@ -464,8 +534,13 @@ console.log(showVariantModal)
                             
                           >
                             <option value="">Select Condition</option>
-                            <option value="1">test Condition 1</option>
-                            <option value="2">test Condition 2</option>
+                            {masterDropdownData?.conditions.map((conditions:any) => (
+                              <option key={conditions.id} value={conditions.id}>
+                                {conditions.name}
+                              </option>
+                            ))}
+                            {/* <option value="1">test Condition 1</option>
+                            <option value="2">test Condition 2</option> */}
                           </select>
                           {errors.Condition && (
                             <div className="invalid-feedback d-block">
